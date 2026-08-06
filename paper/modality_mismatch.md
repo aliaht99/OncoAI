@@ -17,26 +17,37 @@ disease label.
 
 We train three independent classifiers — brain MRI, chest CT and dermatoscopy —
 and evaluate every model against every modality's held-out test set. Off-diagonal
-performance is not merely poor, it is *confidently wrong*: in the worst pair, the
-brain-MRI model assigns a malignant label with ≥90% softmax confidence to **55.9%**
-of chest CT slices, and its mean confidence on foreign images (0.876) **exceeds**
-its mean confidence on its own test set (0.820). Max-softmax probability, the
-default proxy for reliability, is not merely uninformative here but
-anti-correlated: as an out-of-distribution detector it reaches AUROC **0.41** for
-the brain model, worse than chance.
+behaviour is not merely poor, it is *confidently wrong*, and it is strongly
+model-dependent: in the worst pair the brain-MRI model assigns a malignant label
+with ≥90% softmax confidence to **55.9%** of chest CT slices — more than twice
+the rate at which it makes confident tumour calls on its own test set — while the
+skin model degrades gracefully to 0.0% on both foreign modalities. Susceptibility
+therefore cannot be inferred from reported accuracy and must be measured per
+model.
 
-We then show the problem is cheap to fix. A single frozen-backbone *modality
-gate*, trained in ten seconds to answer "which modality is this?", admits an
-image to a diagnostic model only when it matches that model's domain. The gate
-reduces the mean silent failure rate from **30.6% to 0.0%** and the worst-case
-rate from **55.9% to 0.0%**, while accuracy on legitimate inputs moves from
-**88.6% to 88.6%** (−0.06 pp) and 93.6% of legitimate images are still admitted.
+We benchmark five guards on the same data. Max-softmax probability, the default
+proxy for reliability, is close to useless for the vulnerable model (AUROC
+**0.529**, barely above chance) and admits **68.6%** of foreign images at a
+threshold tuned to admit 95% of legitimate ones. Energy behaves similarly
+(0.773 / 58.2%). The strongest unsupervised detectors, Mahalanobis and kNN over
+penultimate features, reach AUROC 0.959 and 0.926 but still admit **22.1%** and
+**19.8%** of foreign images at the same operating point.
 
-The contribution is not a new architecture. It is the observation that a routine,
-one-line deployment assumption — that users supply the right kind of image —
-silently converts a well-behaved classifier into a confident source of false
-cancer findings, together with a measurement protocol and a mitigation that costs
-one extra forward pass.
+We then show that when the set of admissible domains is known in advance — which
+it always is in a multi-cancer deployment — a supervised guard dominates all of
+them. A frozen-backbone *modality gate*, a linear probe trained in minutes to
+answer "which modality is this?", reaches **AUROC 1.000 at 0.0% FPR@95TPR**. It
+reduces the mean silent failure rate from **12.6% to 0.0%** and the worst case
+from **55.9% to 0.0%**, while admitting **100%** of legitimate images and leaving
+native accuracy unchanged at **84.2%**.
+
+The contribution is not a new architecture or a new OOD score. It is the
+observation that a routine deployment assumption — that users supply the right
+kind of image — silently converts well-behaved classifiers into confident sources
+of false cancer findings; a task-specific metric for it; the finding that the
+guards most likely to be reached for first are the ones that fail; and the
+demonstration that the correct guard for this setting is supervised, cheap, and
+already available to anyone who trained the models.
 
 ---
 
@@ -74,27 +85,52 @@ We find the second behaviour, consistently and strongly.
 1. **A cross-modality audit protocol.** We define the *silent failure rate* (SFR)
    — the fraction of foreign-modality inputs assigned a malignant class above a
    confidence threshold — and evaluate it across every (model, modality) pair.
-2. **Evidence that confidence cannot be used as a guard.** Mean confidence on
-   foreign inputs can exceed mean confidence on native inputs; max-softmax AUROC
-   for separating native from foreign inputs falls below 0.5.
-3. **A modality gate that eliminates the failure mode.** A frozen-backbone linear
-   probe over the union of training modalities, with a confidence floor, drives
-   SFR to zero at a −0.06 pp cost in native accuracy.
+   Unlike generic OOD metrics, SFR counts only the errors that are clinically
+   dangerous, and it exposes a wide spread across models (0.0%–55.9%) that
+   aggregate AUROC hides.
+2. **Evidence that the guards reached for first are the ones that fail.** On the
+   most exposed model, MSP (0.529) and Energy (0.508) are indistinguishable from
+   chance; across models they admit 68.6% and 58.2% of foreign images at 95% TPR.
+   Even Mahalanobis, the best unsupervised detector here, admits 22.1%.
+3. **A modality gate that closes the gap.** A frozen-backbone linear probe over
+   the union of served modalities reaches AUROC 1.000 at 0.0% FPR@95TPR, driving
+   SFR to zero with no measurable cost in native accuracy and no legitimate
+   images rejected — because a deployment already knows which modalities it
+   serves, and an unsupervised detector does not get to use that.
 4. **A deployed demonstration.** The accompanying application refuses to return a
    diagnosis when the gate rejects the input, rather than silently answering.
+5. **Two leaky public splits documented.** The brain archive ships duplicate
+   images; the popular HAM10000 mirror ships image-level splits in which 72.4% of
+   test lesions also appear in train, inflating test accuracy from 80.5% to
+   94.4%.
 
 ---
 
 ## 2. Related work
 
-**Out-of-distribution detection.** Detecting inputs that fall outside the training
-distribution is a mature research area; max-softmax probability is the classical
-baseline, with energy scores, Mahalanobis distance and ensembling as common
-improvements. Our contribution is not a new detector. It is the demonstration
-that in the specific, practically common case of *modality mismatch in deployed
-multi-cancer tools*, the baseline is not merely weak but inverted, and that the
-appropriate guard is a supervised modality classifier rather than a generic OOD
-score — because the set of acceptable domains is known in advance.
+**Out-of-distribution detection.** Detecting inputs outside the training
+distribution is a mature area with a dedicated medical-imaging survey [2], an
+established taxonomy of distributional shift, and a settled benchmark suite —
+max-softmax probability as the classical baseline, with Energy, Mahalanobis
+distance, kNN over features, reconstruction-based scores and ensembling as
+standard comparators, evaluated by AUROC and FPR@95TPR. The term *silent failure*
+is itself already used in that literature to describe confident errors on OOD
+inputs. We claim no new detector and no new metric, and we benchmark against that
+suite rather than around it.
+
+Our contribution sits in three gaps that the general framing leaves open. (i)
+Most medical OOD work targets *near*-OOD shift — a different scanner, a different
+site, a different protocol — because inside a hospital that is the shift that
+occurs. Cross-modality exposure is far-OOD and is usually excluded as
+clinically implausible, an assumption that a public upload box removes.
+(ii) The standard target is a generic in/out decision, whereas the clinically
+relevant quantity is narrower: how often a foreign input yields a *confident
+malignant* label. A detector can look adequate by AUROC while still leaking a
+fifth of foreign images at a usable operating point, which is what we measure.
+(iii) The unsupervised framing is the right one when the admissible domain is
+open-ended, but a multi-cancer deployment knows exactly which modalities it
+serves; we show that using that knowledge closes the gap that the unsupervised
+detectors leave open.
 
 **Robustness in medical imaging.** Existing work studies domain shift within a
 modality: different scanners, different hospitals, different acquisition
@@ -108,6 +144,28 @@ models.
 exist, but are evaluated on aggregate accuracy across tasks. To our knowledge the
 question of what a single-task head does when routed the wrong input — the direct
 consequence of putting several such heads behind one selector — is not measured.
+
+**Multi-cancer screening as a field direction.** The move towards systems that
+screen for several cancers at once is now explicit. A 2026 review of AI-driven
+multi-cancer screening [1] surveys achievements across liquid biopsy and imaging
+— including a trial reporting a 29% increase in invasive cancer detection at 44%
+lower workload — and sets out the field's open problems: under-representation of
+early and rare cancers, sample and protocol variability, fairness across
+populations, cost, and the need for prospective validation and regulatory
+evaluation. Notably, that agenda does not include what happens when a deployed
+multi-cancer system receives an input from outside the domain of the model it is
+routed to. Our results suggest it should: the more models sit behind one
+interface, the more ways an input has to reach the wrong one. The same review
+calls for *lightweight, offline-capable* systems suitable for lower-resource
+settings, which is the regime the gate proposed here is designed for — a frozen
+backbone, a linear head, and one additional forward pass.
+
+[1] *Artificial intelligence-driven multi-cancer screening: Achievements,
+challenges, and future prospects.* Intelligent Medicine, 2026.
+doi:10.1016/j.imed.2026.02.001
+
+[2] *Out-of-distribution Detection in Medical Image Analysis: A survey.*
+arXiv:2404.18279.
 
 ---
 
@@ -188,59 +246,100 @@ deployed system without revalidating the clinical model.
 
 ### 4.1 The failure mode
 
-*(τ = 0.9; up to 300 test images per pair)*
+Per-task test performance, for reference (lesion-grouped split for skin):
 
-| Diagnostic model | Input images | Mean confidence | ≥ τ | Confident malignant |
-|---|---|---|---|---|
-| Brain | Brain (native) | 0.820 | 47.4% | 26.3% |
-| Brain | **Lung (foreign)** | **0.876** | 55.9% | **55.9%** |
-| Lung | **Brain (foreign)** | 0.624 | 5.3% | **5.3%** |
-| Lung | Lung (native) | 0.801 | 43.1% | 25.8% |
+| Task | Test accuracy | Macro AUC |
+|---|---|---|
+| Brain | 89.5% | 0.988 |
+| Lung | 87.8% | 0.972 |
+| Skin | 80.5% | 0.962 |
+
+**Silent failure rate**, τ = 0.9, up to 300 test images per pair. Rows are the
+diagnostic model, columns the modality the images actually came from; the
+diagonal is legitimate use.
+
+| Model ↓ / Input → | Brain | Lung | Skin |
+|---|---|---|---|
+| **Brain** | *(native)* | **55.9%** | **14.7%** |
+| **Lung** | 5.3% | *(native)* | 0.0% |
+| **Skin** | 0.0% | 0.0% | *(native)* |
 
 The brain model is the stark case. Shown chest CT — an image containing no brain
 tissue whatsoever — it returns a confident tumour call for **55.9%** of slices,
-more than twice the rate at which it makes confident tumour calls on its own test
-set. Its mean confidence is *higher* on foreign data than on native data.
+against 26.3% confident tumour calls on its own test set. Its mean confidence on
+those foreign images (0.876) *exceeds* its mean confidence on native data
+(0.820).
 
-The asymmetry between the two directions is itself informative. The lung model
-degrades far more gracefully (5.3%), which suggests that susceptibility is a
-property of the individual model and its class structure — a binary
-tumour/no-tumour head with a coarse decision surface has nowhere to put an
-unfamiliar input except one of two disease-bearing bins — rather than a uniform
-constant. This means the failure rate cannot be predicted from published accuracy
-and must be measured per model.
+The asymmetry across the matrix is the more useful finding. The skin model, with
+seven classes and a fine-grained decision surface, produces no confident
+malignant calls on either foreign modality; the binary brain model, which has
+nowhere to place an unfamiliar input except one of two bins — one of which is
+"tumour" — is catastrophically exposed. Susceptibility is thus a property of the
+individual model and its label structure, not a constant of the method, and it
+cannot be predicted from published accuracy. It has to be measured.
 
-### 4.2 Confidence is not a usable guard
+### 4.2 Benchmarking the guards
 
-| Model | MSP AUROC (native vs foreign) | Mean conf. native | Mean conf. foreign |
-|---|---|---|---|
-| Brain | **0.411** | 0.820 | 0.876 |
-| Lung | 0.776 | 0.801 | 0.624 |
+We compare five detectors on the same inputs: max-softmax probability (MSP),
+Energy, Mahalanobis and kNN over penultimate features, and the supervised gate.
+FPR@95TPR is the operationally relevant number — the proportion of foreign images
+still admitted when the threshold is set to admit 95% of legitimate ones.
 
-For the brain model the score is **below 0.5**: thresholding on confidence to
-reject foreign inputs would preferentially reject *legitimate* images and admit
-foreign ones. Any deployment that relies on "we only show results above 90%
-confidence" as a safety measure is, for this model, worse off than showing
-everything.
+**Mean across the three models:**
+
+| Detector | AUROC ↑ | FPR@95TPR ↓ |
+|---|---|---|
+| **Gate (ours)** | **1.000** | **0.000** |
+| Mahalanobis | 0.959 | 0.221 |
+| kNN | 0.926 | 0.198 |
+| MSP | 0.777 | 0.686 |
+| Energy | 0.773 | 0.582 |
+
+**Per model, the vulnerable case is where the baselines collapse:**
+
+| Model | MSP | Energy | Mahalanobis | kNN | Gate |
+|---|---|---|---|---|---|
+| Brain | 0.529 | 0.508 | 0.942 | 0.819 | **1.000** |
+| Lung | 0.911 | 0.875 | 0.970 | 0.989 | **1.000** |
+| Skin | 0.892 | 0.935 | 0.966 | 0.969 | **1.000** |
+
+*(AUROC; higher is better)*
+
+Two observations. First, the cheap guards fail exactly where they are needed:
+for the brain model — the one that actually produces 55.9% confident false
+malignancies — MSP scores 0.529 and Energy 0.508, both indistinguishable from
+chance. A deployment relying on "we only display results above 90% confidence"
+has, for that model, essentially no protection. Second, even the strong
+unsupervised detectors are not sufficient in absolute terms: Mahalanobis, the
+best of them, still admits **22.1%** of foreign images at a 95% TPR operating
+point. For a guard whose failures are confident false cancer findings, a
+one-in-five leak is not a safe resting place.
 
 ### 4.3 The gate
 
-Gate validation accuracy: **99.1%**, trained in 10 seconds on a laptop GPU.
+Gate validation accuracy on 3-way modality classification: **99.94%**, from a
+linear probe on a frozen ImageNet backbone.
 
 | Metric | No gate | With gate |
 |---|---|---|
-| Mean silent failure rate | 30.6% | **0.0%** |
+| Mean silent failure rate | 12.6% | **0.0%** |
 | Worst-pair silent failure rate | 55.9% | **0.0%** |
 | Foreign inputs admitted | 100% | **0.0%** |
-| Accuracy on legitimate inputs | 88.64% | **88.58%** |
-| Legitimate inputs admitted | 100% | 93.6% |
+| Legitimate inputs admitted | 100% | **100%** |
+| Accuracy on legitimate inputs | 84.20% | **84.20%** |
 
-The gate rejects every foreign image in the evaluation while admitting 93.6% of
-legitimate ones, and accuracy on the images it admits is statistically
-indistinguishable from accuracy without it. The 6.4% of legitimate images the
-gate turns away are the real cost, and it is a benign one: a rejected valid image
-produces "please check the image type", which a user can act on, whereas an
-accepted foreign image produces a confident cancer finding, which they cannot.
+With three modalities the gate is exact on this evaluation: every foreign image
+rejected, every legitimate image admitted, and native accuracy unchanged to four
+decimal places. The reason it can dominate general-purpose OOD scores is not
+sophistication but information: an unsupervised detector must infer the boundary
+of "normal" from one class of data, whereas a deployment already knows the
+complete list of modalities it serves and can simply learn to name them. Where
+that list is known, not using it is leaving accuracy on the table.
+
+The honest caveat is that this makes the gate a *closed-set* guard. It is
+evaluated against the modalities it was trained on; an input from a fourth,
+unseen modality is handled only by the confidence floor, which we discuss in the
+limitations.
 
 ---
 

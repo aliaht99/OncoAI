@@ -1,0 +1,79 @@
+{
+  "task": "skin",
+  "accuracy": 0.8045909358446145,
+  "macro_auc": 0.9620158738157386,
+  "classes": [
+    "actinic_keratoses",
+    "basal_cell_carcinoma",
+    "benign_keratosis-like_lesions",
+    "dermatofibroma",
+    "melanocytic_Nevi",
+    "melanoma",
+    "vascular_lesions"
+  ],
+  "per_class": [
+    {
+      "class": "actinic_keratoses",
+      "n_test": 67,
+      "sensitivity": 0.6268656716417911,
+      "specificity": 0.9865196078431373,
+      "precision": 0.65625,
+      "f1": 0.6412213740458016,
+      "auc": 0.9679817822651449
+    },
+    {
+      "class": "basal_cell_carcinoma",
+      "n_test": 91,
+      "sensitivity": 0.7252747252747253,
+      "specificity": 0.9732587064676617,
+      "precision": 0.6055045871559633,
+      "f1": 0.66,
+      "auc": 0.9630556011153026
+    },
+    {
+      "class": "benign_keratosis-like_lesions",
+      "n_test": 204,
+      "sensitivity": 0.696078431372549,
+      "specificity": 0.9638795986622074,
+      "precision": 0.7244897959183674,
+      "f1": 0.71,
+      "auc": 0.9579546199750802
+    },
+    {
+      "class": "dermatofibroma",
+      "n_test": 18,
+      "sensitivity": 0.5,
+      "specificity": 1.0,
+      "precision": 1.0,
+      "f1": 0.6666666666666666,
+      "auc": 0.98995307026241
+    },
+    {
+      "class": "melanocytic_Nevi",
+      "n_test": 1058,
+      "sensitivity": 0.8799621928166351,
+      "specificity": 0.8673946957878315,
+      "precision": 0.9163385826771654,
+      "f1": 0.8977820636451301,
+      "auc": 0.9455039827301979
+    },
+    {
+      "class": "melanoma",
+      "n_test": 231,
+      "sensitivity": 0.6363636363636364,
+      "specificity": 0.917574931880109,
+      "precision": 0.5485074626865671,
+      "f1": 0.5891783567134269,
+      "auc": 0.9097219764794697
+    },
+    {
+      "class": "vascular_lesions",
+      "n_test": 30,
+      "sensitivity": 1.0,
+      "specificity": 0.9958058717795086,
+      "precision": 0.8108108108108109,
+      "f1": 0.8955223880597014,
+      "auc": 0.9999400838825644
+    }
+  ]
+}

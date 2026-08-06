@@ -19,38 +19,64 @@
 Train a brain-MRI tumour classifier. Show it a **chest CT** — an image with no brain
 tissue in it at all. It does not abstain, and it does not hedge:
 
-> **55.9%** of chest CT slices are labelled **"tumour" with ≥90% confidence.**
-> The model's mean confidence on these foreign images (**0.876**) is *higher* than on
-> its own test set (**0.820**).
+> **55.9%** of chest CT slices are labelled **"tumour" with ≥90% confidence** — more
+> than twice the rate at which it makes confident tumour calls on its *own* test set.
+> Its mean confidence on those foreign images (**0.876**) is *higher* than on its own
+> data (**0.820**).
 
-The usual safety net does not catch this. Using max-softmax confidence to separate
-legitimate inputs from foreign ones gives **AUROC 0.41** for that model — *worse than
-random*. Thresholding on confidence would preferentially reject the real images and
-admit the wrong ones.
+**Silent failure rate** — how often a foreign image gets a confident malignant label.
+Rows = model, columns = where the images actually came from:
 
-This matters because every public cancer demo is a file-upload box, and multi-cancer
-tools add a dropdown that the least-informed person in the loop is expected to set
-correctly.
+| Model ↓ / Input → | Brain | Lung | Skin |
+|---|---|---|---|
+| **Brain** | *native* | **55.9%** | **14.7%** |
+| **Lung** | 5.3% | *native* | 0.0% |
+| **Skin** | 0.0% | 0.0% | *native* |
+
+Exposure is wildly model-dependent: the 7-class skin model shrugs it off, the binary
+brain model — which has nowhere to put an unfamiliar image except "tumour" or
+"no tumour" — is catastrophically exposed. **You cannot predict this from published
+accuracy. It has to be measured.**
+
+## The guards that don't work
+
+We benchmarked the standard OOD detectors on the same data. FPR@95TPR = how many
+foreign images still get through when you admit 95% of legitimate ones.
+
+| Detector | AUROC ↑ | FPR@95TPR ↓ |
+|---|---|---|
+| **Modality gate (ours)** | **1.000** | **0.0%** |
+| Mahalanobis | 0.959 | 22.1% |
+| kNN | 0.926 | 19.8% |
+| MSP (max softmax) | 0.777 | 68.6% |
+| Energy | 0.773 | 58.2% |
+
+The cheap guards fail exactly where they're needed. On the *brain* model — the one
+actually producing 55.9% false malignancies — **MSP scores 0.529 and Energy 0.508**,
+both indistinguishable from a coin flip. "We only show results above 90% confidence"
+is not a safety measure here. And even Mahalanobis, the best unsupervised detector,
+still lets **1 in 5** foreign images through.
 
 ## The fix
 
 A **modality gate**: one small classifier that answers *"which modality is this?"*
-before any diagnostic model is allowed to see the image. Frozen ImageNet trunk,
-linear head, **trained in 10 seconds**, 99.1% accurate. If the gate's answer does not
-match the selected task — or the gate itself is unsure — the system **refuses** instead
-of diagnosing.
+before any diagnostic model sees the image. Frozen ImageNet trunk, linear head,
+**99.94%** accurate. If its answer doesn't match the selected task — or it isn't
+confident — the system **refuses** instead of diagnosing.
 
 | | No gate | With gate |
 |---|---|---|
-| Mean silent failure rate | 30.6% | **0.0%** |
+| Mean silent failure rate | 12.6% | **0.0%** |
 | Worst-pair silent failure rate | 55.9% | **0.0%** |
 | Foreign images admitted | 100% | **0.0%** |
-| Accuracy on legitimate inputs | 88.64% | **88.58%** |
-| Legitimate images still admitted | 100% | 93.6% |
+| Legitimate images admitted | 100% | **100%** |
+| Accuracy on legitimate inputs | 84.20% | **84.20%** |
 
-Zero silent failures, at a cost of **0.06 percentage points** of accuracy. The gate
-never touches the diagnostic models — it is a pre-filter, so it can be bolted onto an
-already-validated system.
+Zero silent failures, zero measurable cost. It beats every unsupervised detector for a
+simple reason — not sophistication, but *information*: an unsupervised score has to
+infer the boundary of "normal" from one class of data, while a deployment already
+knows the exact list of modalities it serves. The gate never touches the diagnostic
+models, so it can be bolted onto an already-validated system.
 
 📄 Full write-up: [`paper/modality_mismatch.md`](paper/modality_mismatch.md)
 
@@ -65,11 +91,27 @@ not a leaderboard entry.
 |---|---|---|---|---|
 | **Brain** | MRI | tumour / no tumour | 89.5% | **0.988** |
 | **Lung** | CT | 3 carcinoma subtypes + normal | 87.8% | **0.972** |
-| **Skin** | Dermatoscopy | 7 lesion types | see `results/skin/` | — |
+| **Skin** | Dermatoscopy | 7 lesion types | 80.5% | **0.962** |
 
 Lung, per class: *normal* is separated essentially perfectly (sensitivity 98.2%,
 specificity 100%, AUC 0.9998); the three carcinoma subtypes are harder to tell apart
 from each other (AUC 0.943–0.976), which is the clinically expected pattern.
+
+### ⚠️ Two leaky public splits, fixed
+
+Both fixes lower the headline numbers. That is the point.
+
+- **Brain** — the archive ships a nested duplicate copy of every image. Split naively
+  and the same image lands on both sides. We de-duplicate on filename first.
+- **Skin** — HAM10000 contains several photographs of the *same lesion*, and the
+  splits shipped with the popular HF mirror are drawn at image level:
+  **72.4% of the test lesions also appear in train.** Training on those splits gives
+  **94.4% accuracy / 0.997 AUC** — comfortably above published state of the art for
+  7-class HAM10000, which is the tell. We re-split on `lesion_id`, which gives the
+  honest **80.5% / 0.962** above.
+
+If you benchmark against this mirror's default splits, your numbers are not
+comparable to the literature.
 
 ---
 
@@ -106,6 +148,7 @@ python src/common/evaluate.py brain
 python src/novel/modality_audit.py --tau 0.9       # measure the failure
 python src/novel/modality_gate.py train            # build the guard
 python src/novel/modality_gate.py evaluate         # measure the fix
+python src/novel/ood_baselines.py                  # vs MSP / Energy / Mahalanobis / kNN
 python src/novel/make_figures.py
 ```
 
@@ -128,6 +171,7 @@ OncoAI/
 │   └── novel/
 │       ├── modality_audit.py   cross-modality silent-failure audit
 │       ├── modality_gate.py    the gate: train + evaluate
+│       ├── ood_baselines.py     MSP / Energy / Mahalanobis / kNN comparison
 │       └── make_figures.py     paper figures
 ├── models/                     trained weights + metrics JSON
 ├── results/

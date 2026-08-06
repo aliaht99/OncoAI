@@ -1,0 +1,121 @@
+{
+  "per_model": [
+    {
+      "model": "brain",
+      "detector": "MSP",
+      "auroc": 0.5290137107474568,
+      "fpr_at_95tpr": 0.9277310924369748
+    },
+    {
+      "model": "brain",
+      "detector": "Energy",
+      "auroc": 0.5077841662980982,
+      "fpr_at_95tpr": 0.984873949579832
+    },
+    {
+      "model": "brain",
+      "detector": "Mahalanobis",
+      "auroc": 0.9415745245466608,
+      "fpr_at_95tpr": 0.2638655462184874
+    },
+    {
+      "model": "brain",
+      "detector": "kNN",
+      "auroc": 0.8192835028748342,
+      "fpr_at_95tpr": 0.38487394957983195
+    },
+    {
+      "model": "brain",
+      "detector": "Gate (ours)",
+      "auroc": 1.0,
+      "fpr_at_95tpr": 0.0
+    },
+    {
+      "model": "lung",
+      "detector": "MSP",
+      "auroc": 0.9105606258148633,
+      "fpr_at_95tpr": 0.5295857988165681
+    },
+    {
+      "model": "lung",
+      "detector": "Energy",
+      "auroc": 0.8750777254036706,
+      "fpr_at_95tpr": 0.4230769230769231
+    },
+    {
+      "model": "lung",
+      "detector": "Mahalanobis",
+      "auroc": 0.9700832414000602,
+      "fpr_at_95tpr": 0.16568047337278108
+    },
+    {
+      "model": "lung",
+      "detector": "kNN",
+      "auroc": 0.9892187343295556,
+      "fpr_at_95tpr": 0.05029585798816568
+    },
+    {
+      "model": "lung",
+      "detector": "Gate (ours)",
+      "auroc": 1.0,
+      "fpr_at_95tpr": 0.0
+    },
+    {
+      "model": "skin",
+      "detector": "MSP",
+      "auroc": 0.8917417417417418,
+      "fpr_at_95tpr": 0.6006006006006006
+    },
+    {
+      "model": "skin",
+      "detector": "Energy",
+      "auroc": 0.9352752752752754,
+      "fpr_at_95tpr": 0.33933933933933935
+    },
+    {
+      "model": "skin",
+      "detector": "Mahalanobis",
+      "auroc": 0.9664164164164164,
+      "fpr_at_95tpr": 0.23423423423423423
+    },
+    {
+      "model": "skin",
+      "detector": "kNN",
+      "auroc": 0.9686486486486486,
+      "fpr_at_95tpr": 0.15915915915915915
+    },
+    {
+      "model": "skin",
+      "detector": "Gate (ours)",
+      "auroc": 1.0,
+      "fpr_at_95tpr": 0.0
+    }
+  ],
+  "mean": [
+    {
+      "detector": "Gate (ours)",
+      "auroc": 1.0,
+      "fpr_at_95tpr": 0.0
+    },
+    {
+      "detector": "Mahalanobis",
+      "auroc": 0.9593580607877125,
+      "fpr_at_95tpr": 0.22126008460850088
+    },
+    {
+      "detector": "kNN",
+      "auroc": 0.9257169619510129,
+      "fpr_at_95tpr": 0.1981096555757189
+    },
+    {
+      "detector": "MSP",
+      "auroc": 0.7771053594346874,
+      "fpr_at_95tpr": 0.6859724972847144
+    },
+    {
+      "detector": "Energy",
+      "auroc": 0.7727123889923481,
+      "fpr_at_95tpr": 0.5824300706653648
+    }
+  ]
+}

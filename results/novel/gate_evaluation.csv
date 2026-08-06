@@ -1,0 +1,10 @@
+model,input_data,native,n,admitted_rate,sfr_before,sfr_after,accuracy_before,accuracy_after_on_admitted,retained_fraction
+brain,brain,True,38,1.0,0.2631578947368421,0.2631578947368421,0.8947368421052632,0.8947368421052632,1.0
+brain,lung,False,295,0.0,0.559322033898305,0.0,,,
+brain,skin,False,300,0.0,0.14666666666666667,0.0,,,
+lung,brain,False,38,0.0,0.05263157894736842,0.0,,,
+lung,lung,True,295,1.0,0.2576271186440678,0.2576271186440678,0.8779661016949153,0.8779661016949153,1.0
+lung,skin,False,300,0.0,0.0,0.0,,,
+skin,brain,False,38,0.0,0.0,0.0,,,
+skin,lung,False,295,0.0,0.0,0.0,,,
+skin,skin,True,300,1.0,0.09,0.09,0.7533333333333333,0.7533333333333333,1.0

@@ -1,0 +1,13 @@
+{
+  "gate_val_accuracy": 0.9994493392070485,
+  "tau": 0.9,
+  "gate_tau": 0.9,
+  "silent_failure_rate_before": 0.12643671325205666,
+  "silent_failure_rate_after": 0.0,
+  "worst_sfr_before": 0.559322033898305,
+  "worst_sfr_after": 0.0,
+  "foreign_admitted_rate": 0.0,
+  "native_admitted_rate": 1.0,
+  "native_accuracy_before": 0.8420120923778373,
+  "native_accuracy_after": 0.8420120923778373
+}

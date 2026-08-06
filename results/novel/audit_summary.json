@@ -1,0 +1,122 @@
+{
+  "tau": 0.9,
+  "tasks": [
+    "brain",
+    "lung",
+    "skin"
+  ],
+  "worst_silent_failure_rate": 0.559322033898305,
+  "mean_silent_failure_rate": 0.12643671325205666,
+  "msp_auroc": [
+    {
+      "model": "brain",
+      "msp_auroc": 0.5290137107474568,
+      "mean_conf_native": 0.8198972940444946,
+      "mean_conf_foreign": 0.8157018423080444
+    },
+    {
+      "model": "lung",
+      "msp_auroc": 0.9105606258148631,
+      "mean_conf_native": 0.8011876344680786,
+      "mean_conf_foreign": 0.4860402047634125
+    },
+    {
+      "model": "skin",
+      "msp_auroc": 0.8917417417417418,
+      "mean_conf_native": 0.8445940017700195,
+      "mean_conf_foreign": 0.538099467754364
+    }
+  ],
+  "pairs": [
+    {
+      "model": "brain",
+      "input_data": "brain",
+      "native": true,
+      "n": 38,
+      "mean_confidence": 0.8198972940444946,
+      "confident_rate": 0.47368421052631576,
+      "silent_failure_rate": null,
+      "malignant_confident_rate": 0.2631578947368421
+    },
+    {
+      "model": "brain",
+      "input_data": "lung",
+      "native": false,
+      "n": 295,
+      "mean_confidence": 0.875718355178833,
+      "confident_rate": 0.559322033898305,
+      "silent_failure_rate": 0.559322033898305,
+      "malignant_confident_rate": 0.559322033898305
+    },
+    {
+      "model": "brain",
+      "input_data": "skin",
+      "native": false,
+      "n": 300,
+      "mean_confidence": 0.7566856145858765,
+      "confident_rate": 0.14666666666666667,
+      "silent_failure_rate": 0.14666666666666667,
+      "malignant_confident_rate": 0.14666666666666667
+    },
+    {
+      "model": "lung",
+      "input_data": "brain",
+      "native": false,
+      "n": 38,
+      "mean_confidence": 0.6239405870437622,
+      "confident_rate": 0.05263157894736842,
+      "silent_failure_rate": 0.05263157894736842,
+      "malignant_confident_rate": 0.05263157894736842
+    },
+    {
+      "model": "lung",
+      "input_data": "lung",
+      "native": true,
+      "n": 295,
+      "mean_confidence": 0.8011876344680786,
+      "confident_rate": 0.43050847457627117,
+      "silent_failure_rate": null,
+      "malignant_confident_rate": 0.2576271186440678
+    },
+    {
+      "model": "lung",
+      "input_data": "skin",
+      "native": false,
+      "n": 300,
+      "mean_confidence": 0.46857279539108276,
+      "confident_rate": 0.0,
+      "silent_failure_rate": 0.0,
+      "malignant_confident_rate": 0.0
+    },
+    {
+      "model": "skin",
+      "input_data": "brain",
+      "native": false,
+      "n": 38,
+      "mean_confidence": 0.615515947341919,
+      "confident_rate": 0.02631578947368421,
+      "silent_failure_rate": 0.0,
+      "malignant_confident_rate": 0.0
+    },
+    {
+      "model": "skin",
+      "input_data": "lung",
+      "native": false,
+      "n": 295,
+      "mean_confidence": 0.5281271934509277,
+      "confident_rate": 0.020338983050847456,
+      "silent_failure_rate": 0.0,
+      "malignant_confident_rate": 0.0
+    },
+    {
+      "model": "skin",
+      "input_data": "skin",
+      "native": true,
+      "n": 300,
+      "mean_confidence": 0.8445940017700195,
+      "confident_rate": 0.5766666666666667,
+      "silent_failure_rate": null,
+      "malignant_confident_rate": 0.09
+    }
+  ]
+}

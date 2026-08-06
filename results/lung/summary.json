@@ -1,0 +1,49 @@
+{
+  "task": "lung",
+  "accuracy": 0.8779661016949153,
+  "macro_auc": 0.9715376599128611,
+  "classes": [
+    "adenocarcinoma",
+    "large.cell.carcinoma",
+    "normal",
+    "squamous.cell.carcinoma"
+  ],
+  "per_class": [
+    {
+      "class": "adenocarcinoma",
+      "n_test": 100,
+      "sensitivity": 0.87,
+      "specificity": 0.9076923076923077,
+      "precision": 0.8285714285714286,
+      "f1": 0.848780487804878,
+      "auc": 0.9431282051282052
+    },
+    {
+      "class": "large.cell.carcinoma",
+      "n_test": 51,
+      "sensitivity": 0.8627450980392157,
+      "specificity": 0.9590163934426229,
+      "precision": 0.8148148148148148,
+      "f1": 0.838095238095238,
+      "auc": 0.9671327547412408
+    },
+    {
+      "class": "normal",
+      "n_test": 54,
+      "sensitivity": 0.9814814814814815,
+      "specificity": 1.0,
+      "precision": 1.0,
+      "f1": 0.9906542056074767,
+      "auc": 0.9998463193483941
+    },
+    {
+      "class": "squamous.cell.carcinoma",
+      "n_test": 90,
+      "sensitivity": 0.8333333333333334,
+      "specificity": 0.9609756097560975,
+      "precision": 0.9036144578313253,
+      "f1": 0.8670520231213873,
+      "auc": 0.9760433604336044
+    }
+  ]
+}

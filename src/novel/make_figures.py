@@ -128,6 +128,41 @@ def fig_gate_effect():
     plt.close(fig)
 
 
+def fig_baselines():
+    df = pd.read_csv(OUT / "ood_baselines.csv")
+    order = (df.groupby("detector")["auroc"].mean()
+               .sort_values(ascending=False).index.tolist())
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.4))
+    models = sorted(df.model.unique())
+    width = 0.8 / len(models)
+    palette = ["#0e7490", "#0891b2", "#67e8f9"]
+
+    for ax, metric, better in ((axes[0], "auroc", "higher is better"),
+                               (axes[1], "fpr_at_95tpr", "lower is better")):
+        x = np.arange(len(order))
+        for k, m in enumerate(models):
+            sub = df[df.model == m].set_index("detector").reindex(order)
+            ax.bar(x + k * width - 0.4 + width / 2, sub[metric], width,
+                   label=m, color=palette[k % len(palette)])
+        ax.set_xticks(x, order, rotation=18, ha="right", fontsize=9)
+        ax.set_title(f"{'AUROC' if metric == 'auroc' else 'FPR@95TPR'} — {better}",
+                     fontweight="bold", fontsize=11)
+        ax.spines[["top", "right"]].set_visible(False)
+        if metric == "auroc":
+            ax.axhline(0.5, ls="--", lw=1, color=GREY)
+            ax.set_ylim(0, 1.05)
+            ax.legend(frameon=False, fontsize=9)
+        else:
+            ax.set_ylim(0, 1.0)
+
+    fig.suptitle("Detecting wrong-modality inputs: the gate vs standard OOD scores",
+                 fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(OUT / "fig4_ood_baselines.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main():
     if not (OUT / "cross_modality_audit.csv").exists():
         sys.exit("Run src/novel/modality_audit.py first.")
@@ -135,6 +170,8 @@ def main():
     fig_confidence()
     if (OUT / "gate_summary.json").exists():
         fig_gate_effect()
+    if (OUT / "ood_baselines.csv").exists():
+        fig_baselines()
     print(f"figures written to results/novel/")
 
 

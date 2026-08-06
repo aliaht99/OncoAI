@@ -1,0 +1,203 @@
+{
+  "task": "lung",
+  "backbone": "resnet18",
+  "image_size": 224,
+  "classes": [
+    "adenocarcinoma",
+    "large.cell.carcinoma",
+    "normal",
+    "squamous.cell.carcinoma"
+  ],
+  "seed": 42,
+  "n_train": 400,
+  "n_val": 72,
+  "n_test": 295,
+  "best_val_auc": 0.9641042381865027,
+  "test_accuracy": 0.8779661016949153,
+  "test_auc": 0.9715376599128611,
+  "train_minutes": 1.93,
+  "history": [
+    {
+      "phase": "warmup",
+      "epoch": 1,
+      "train_loss": 1.2338383674621582,
+      "val_acc": 0.3888888888888889,
+      "val_auc": 0.7967447424681966
+    },
+    {
+      "phase": "warmup",
+      "epoch": 2,
+      "train_loss": 1.0235382175445558,
+      "val_acc": 0.2777777777777778,
+      "val_auc": 0.7950717110451865
+    },
+    {
+      "phase": "warmup",
+      "epoch": 3,
+      "train_loss": 0.9458095359802247,
+      "val_acc": 0.4722222222222222,
+      "val_auc": 0.8350109940459356
+    },
+    {
+      "phase": "finetune",
+      "epoch": 1,
+      "train_loss": 0.8703411817550659,
+      "val_acc": 0.6388888888888888,
+      "val_auc": 0.8438158329693434
+    },
+    {
+      "phase": "finetune",
+      "epoch": 2,
+      "train_loss": 0.6581911873817444,
+      "val_acc": 0.6944444444444444,
+      "val_auc": 0.8846567995187518
+    },
+    {
+      "phase": "finetune",
+      "epoch": 3,
+      "train_loss": 0.5861795544624329,
+      "val_acc": 0.6666666666666666,
+      "val_auc": 0.8920719447209119
+    },
+    {
+      "phase": "finetune",
+      "epoch": 4,
+      "train_loss": 0.525907781124115,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9154259720669351
+    },
+    {
+      "phase": "finetune",
+      "epoch": 5,
+      "train_loss": 0.4615572643280029,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9354931598879064
+    },
+    {
+      "phase": "finetune",
+      "epoch": 6,
+      "train_loss": 0.4257345461845398,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9498263225961628
+    },
+    {
+      "phase": "finetune",
+      "epoch": 7,
+      "train_loss": 0.36694236755371096,
+      "val_acc": 0.75,
+      "val_auc": 0.9255819185034807
+    },
+    {
+      "phase": "finetune",
+      "epoch": 8,
+      "train_loss": 0.34906384348869324,
+      "val_acc": 0.8194444444444444,
+      "val_auc": 0.9326033998649039
+    },
+    {
+      "phase": "finetune",
+      "epoch": 9,
+      "train_loss": 0.32465664982795717,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9503570612073967
+    },
+    {
+      "phase": "finetune",
+      "epoch": 10,
+      "train_loss": 0.3124046540260315,
+      "val_acc": 0.8611111111111112,
+      "val_auc": 0.9558206196284769
+    },
+    {
+      "phase": "finetune",
+      "epoch": 11,
+      "train_loss": 0.29604087352752684,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9593553363374336
+    },
+    {
+      "phase": "finetune",
+      "epoch": 12,
+      "train_loss": 0.27431416511535645,
+      "val_acc": 0.7777777777777778,
+      "val_auc": 0.9493589960774546
+    },
+    {
+      "phase": "finetune",
+      "epoch": 13,
+      "train_loss": 0.28223966956138613,
+      "val_acc": 0.7916666666666666,
+      "val_auc": 0.9582999332456095
+    },
+    {
+      "phase": "finetune",
+      "epoch": 14,
+      "train_loss": 0.2756429386138916,
+      "val_acc": 0.8194444444444444,
+      "val_auc": 0.9610006016136432
+    },
+    {
+      "phase": "finetune",
+      "epoch": 15,
+      "train_loss": 0.26157003521919253,
+      "val_acc": 0.7916666666666666,
+      "val_auc": 0.9571690766314153
+    },
+    {
+      "phase": "finetune",
+      "epoch": 16,
+      "train_loss": 0.2683269321918488,
+      "val_acc": 0.8055555555555556,
+      "val_auc": 0.9627500733321551
+    },
+    {
+      "phase": "finetune",
+      "epoch": 17,
+      "train_loss": 0.2704647362232208,
+      "val_acc": 0.8333333333333334,
+      "val_auc": 0.9641042381865027
+    },
+    {
+      "phase": "finetune",
+      "epoch": 18,
+      "train_loss": 0.2507746976613998,
+      "val_acc": 0.8194444444444444,
+      "val_auc": 0.9617332211297944
+    },
+    {
+      "phase": "finetune",
+      "epoch": 19,
+      "train_loss": 0.2548894345760345,
+      "val_acc": 0.8333333333333334,
+      "val_auc": 0.9623871058720972
+    },
+    {
+      "phase": "finetune",
+      "epoch": 20,
+      "train_loss": 0.25960327506065367,
+      "val_acc": 0.8333333333333334,
+      "val_auc": 0.9622242489673215
+    },
+    {
+      "phase": "finetune",
+      "epoch": 21,
+      "train_loss": 0.2608097368478775,
+      "val_acc": 0.8194444444444444,
+      "val_auc": 0.9626920791199775
+    },
+    {
+      "phase": "finetune",
+      "epoch": 22,
+      "train_loss": 0.2586341738700867,
+      "val_acc": 0.8194444444444444,
+      "val_auc": 0.9626804802775419
+    },
+    {
+      "phase": "finetune",
+      "epoch": 23,
+      "train_loss": 0.26509723901748655,
+      "val_acc": 0.8333333333333334,
+      "val_auc": 0.9634155569168934
+    }
+  ]
+}

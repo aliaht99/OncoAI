@@ -1,0 +1,150 @@
+{
+  "task": "skin",
+  "backbone": "resnet18",
+  "image_size": 224,
+  "classes": [
+    "actinic_keratoses",
+    "basal_cell_carcinoma",
+    "benign_keratosis-like_lesions",
+    "dermatofibroma",
+    "melanocytic_Nevi",
+    "melanoma",
+    "vascular_lesions"
+  ],
+  "seed": 42,
+  "n_train": 8034,
+  "n_val": 1706,
+  "n_test": 1699,
+  "best_val_auc": 0.9608595925198621,
+  "test_accuracy": 0.8045909358446145,
+  "test_auc": 0.9620158738157386,
+  "train_minutes": 31.36,
+  "history": [
+    {
+      "phase": "warmup",
+      "epoch": 1,
+      "train_loss": 1.4089479643757854,
+      "val_acc": 0.3030480656506448,
+      "val_auc": 0.854409964128992
+    },
+    {
+      "phase": "warmup",
+      "epoch": 2,
+      "train_loss": 1.256219559354452,
+      "val_acc": 0.593200468933177,
+      "val_auc": 0.8926698256068069
+    },
+    {
+      "phase": "warmup",
+      "epoch": 3,
+      "train_loss": 1.2112210772362164,
+      "val_acc": 0.5926143024618992,
+      "val_auc": 0.9029656051119163
+    },
+    {
+      "phase": "finetune",
+      "epoch": 1,
+      "train_loss": 0.8188398568108511,
+      "val_acc": 0.705158264947245,
+      "val_auc": 0.9435679452268768
+    },
+    {
+      "phase": "finetune",
+      "epoch": 2,
+      "train_loss": 0.643016499223061,
+      "val_acc": 0.7303634232121923,
+      "val_auc": 0.9376166570749592
+    },
+    {
+      "phase": "finetune",
+      "epoch": 3,
+      "train_loss": 0.5680381253877326,
+      "val_acc": 0.7690504103165299,
+      "val_auc": 0.9497213924714101
+    },
+    {
+      "phase": "finetune",
+      "epoch": 4,
+      "train_loss": 0.5056433342629059,
+      "val_acc": 0.7778429073856975,
+      "val_auc": 0.9522535653177108
+    },
+    {
+      "phase": "finetune",
+      "epoch": 5,
+      "train_loss": 0.4776920234501169,
+      "val_acc": 0.7696365767878077,
+      "val_auc": 0.9529580703627268
+    },
+    {
+      "phase": "finetune",
+      "epoch": 6,
+      "train_loss": 0.4372885539100216,
+      "val_acc": 0.7901524032825322,
+      "val_auc": 0.9512566349772377
+    },
+    {
+      "phase": "finetune",
+      "epoch": 7,
+      "train_loss": 0.408234537745816,
+      "val_acc": 0.8141852286049238,
+      "val_auc": 0.9591044195290598
+    },
+    {
+      "phase": "finetune",
+      "epoch": 8,
+      "train_loss": 0.38538460619330317,
+      "val_acc": 0.7807737397420867,
+      "val_auc": 0.9554760670228364
+    },
+    {
+      "phase": "finetune",
+      "epoch": 9,
+      "train_loss": 0.37407186421880323,
+      "val_acc": 0.8065650644783119,
+      "val_auc": 0.9592935413149212
+    },
+    {
+      "phase": "finetune",
+      "epoch": 10,
+      "train_loss": 0.356719048033017,
+      "val_acc": 0.805978898007034,
+      "val_auc": 0.9545895483260319
+    },
+    {
+      "phase": "finetune",
+      "epoch": 11,
+      "train_loss": 0.34894976486517537,
+      "val_acc": 0.8182883939038686,
+      "val_auc": 0.9543781638191301
+    },
+    {
+      "phase": "finetune",
+      "epoch": 12,
+      "train_loss": 0.3350699039605948,
+      "val_acc": 0.7954279015240329,
+      "val_auc": 0.9572396591232711
+    },
+    {
+      "phase": "finetune",
+      "epoch": 13,
+      "train_loss": 0.32904827312833196,
+      "val_acc": 0.8048065650644783,
+      "val_auc": 0.9608595925198621
+    },
+    {
+      "phase": "finetune",
+      "epoch": 14,
+      "train_loss": 0.32860749560800806,
+      "val_acc": 0.809495896834701,
+      "val_auc": 0.9584548952194831
+    },
+    {
+      "phase": "finetune",
+      "epoch": 15,
+      "train_loss": 0.32239652549505293,
+      "val_acc": 0.8042203985932005,
+      "val_auc": 0.9591506527171225
+    }
+  ]
+}

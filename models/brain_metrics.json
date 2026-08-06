@@ -1,0 +1,89 @@
+{
+  "task": "brain",
+  "backbone": "resnet18",
+  "image_size": 224,
+  "classes": [
+    "no_tumor",
+    "tumor"
+  ],
+  "seed": 42,
+  "n_train": 177,
+  "n_val": 38,
+  "n_test": 38,
+  "best_val_auc": 0.9594202898550726,
+  "test_accuracy": 0.8947368421052632,
+  "test_auc": 0.9884057971014493,
+  "train_minutes": 0.31,
+  "history": [
+    {
+      "phase": "warmup",
+      "epoch": 1,
+      "train_loss": 0.657755910340002,
+      "val_acc": 0.39473684210526316,
+      "val_auc": 0.9072463768115943
+    },
+    {
+      "phase": "warmup",
+      "epoch": 2,
+      "train_loss": 0.5940843237995428,
+      "val_acc": 0.5263157894736842,
+      "val_auc": 0.9159420289855073
+    },
+    {
+      "phase": "warmup",
+      "epoch": 3,
+      "train_loss": 0.5089872954255443,
+      "val_acc": 0.8421052631578947,
+      "val_auc": 0.9101449275362319
+    },
+    {
+      "phase": "finetune",
+      "epoch": 1,
+      "train_loss": 0.38910230202863444,
+      "val_acc": 0.8157894736842105,
+      "val_auc": 0.9594202898550726
+    },
+    {
+      "phase": "finetune",
+      "epoch": 2,
+      "train_loss": 0.2917826891282184,
+      "val_acc": 0.8947368421052632,
+      "val_auc": 0.9478260869565217
+    },
+    {
+      "phase": "finetune",
+      "epoch": 3,
+      "train_loss": 0.2314782516431,
+      "val_acc": 0.9473684210526315,
+      "val_auc": 0.9478260869565217
+    },
+    {
+      "phase": "finetune",
+      "epoch": 4,
+      "train_loss": 0.19683233576979342,
+      "val_acc": 0.9210526315789473,
+      "val_auc": 0.9449275362318841
+    },
+    {
+      "phase": "finetune",
+      "epoch": 5,
+      "train_loss": 0.22400352240955762,
+      "val_acc": 0.868421052631579,
+      "val_auc": 0.9333333333333335
+    },
+    {
+      "phase": "finetune",
+      "epoch": 6,
+      "train_loss": 0.16589473027967463,
+      "val_acc": 0.8947368421052632,
+      "val_auc": 0.9246376811594204
+    },
+    {
+      "phase": "finetune",
+      "epoch": 7,
+      "train_loss": 0.2026653424494684,
+      "val_acc": 0.8947368421052632,
+      "val_auc": 0.9420289855072465
+    }
+  ]
+}
