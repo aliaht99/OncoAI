@@ -259,14 +259,16 @@ st.markdown("""
 
 cols = st.columns(3)
 for col, (label, meta) in zip(cols, TASKS.items()):
-    m, _, _ = load_task_model(meta["key"])
+    # Check the checkpoint file rather than loading it: on a 1 GB free tier,
+    # loading all three models just to render status badges is enough to OOM.
+    trained = (MODELS / f"{meta['key']}_model.pth").exists()
     s = load_summary(meta["key"])
     auc = s.get("macro_auc") or s.get("test_auc")
     with col:
-        if m is not None and auc:
+        if trained and auc:
             body = f"{label} · AUC {auc:.3f}"
             dot = "ok"
-        elif m is not None:
+        elif trained:
             body, dot = f"{label} · ready", "ok"
         else:
             body, dot = f"{label} · not trained", "off"
