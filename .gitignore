@@ -1,0 +1,21 @@
+# ── Raw datasets (re-downloadable) ────────────────────────────
+data/
+*.parquet
+*.zip
+
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# ── Large checkpoints (keep only final small models) ──────────
+*.pth.tar
+checkpoints/
+
+# ── OS / editor ───────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+.streamlit/
