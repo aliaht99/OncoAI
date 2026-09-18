@@ -82,6 +82,73 @@ models, so it can be bolted onto an already-validated system.
 
 ---
 
+## The second question: what can it take off the worklist?
+
+Refusing bad inputs makes the system safe. It does not make it *useful*. The
+reason a department buys diagnostic AI is not diagnosis — it is **triage**:
+removing the clearly-normal studies from a human worklist. That needs a number
+no accuracy figure contains.
+
+> *"It removes X% of your list, and of the cancers in what it removes, it misses
+> no more than Y%."*
+
+Softmax cannot supply it, and temperature scaling barely helps — on skin it moves
+ECE only **0.050 → 0.044**, because the miscalibration is localised (cases scored
+~0.65 are malignant ~40% of the time), not a uniform sharpness error one scalar
+can absorb. So we stop relying on the score being a probability and put the
+guarantee on the **threshold** instead: a Clopper-Pearson upper bound walked over
+thresholds in a fixed sequence. Distribution-free, finite-sample, and valid even
+if the calibration is wrong.
+
+**Skin — the promise holds:**
+
+| | |
+|---|---|
+| Promised miss rate | ≤ 4.96% (95% confidence) |
+| Delivered on test | **2.57%** (10/389) — sensitivity **97.4%** |
+| Worklist removed | **38.3%** (650/1699) |
+| Prevalence, before → after | 22.9% → **36.1%** |
+| Violations across 50 calibration draws | **0/50** |
+
+What a stricter promise costs:
+
+| Tolerated miss rate | 2% | 5% | 10% | 15% | 20% | 30% |
+|---|---|---|---|---|---|---|
+| Worklist removed | 2.1% | **38.3%** | 56.6% | 62.8% | 66.2% | 71.8% |
+| Cancers missed (test) | 0.0% | 2.6% | 8.0% | 12.6% | 15.4% | 21.3% |
+
+### Two walls, and both are reported instead of papered over
+
+**A sample-size wall.** Promising a 5% miss rate at 95% confidence needs at least
+**59** malignant calibration cases — `n ≥ log δ / log(1−α)` — *before model
+quality enters the argument*. Brain has 15 and lung has 41, so despite AUCs of
+0.988 and 0.972 neither can support the promise, and the tool clears nothing and
+says why. A perfect classifier calibrated on 40 cancers still cannot promise 5%.
+
+**An exchangeability wall.** The bound assumes deployment cases are exchangeable
+with calibration cases. Lung's public splits ship as fixed folders, not random
+draws, and it shows: a threshold promising **≤14.6%** misses delivered **31.9%**.
+The bound wasn't wrong — its precondition was. That specific failure is
+detectable **without labels**, which is the situation at any new site on day one:
+
+| Task | KS | p | verdict |
+|---|---|---|---|
+| Lung | 0.364 | 2.4 × 10⁻⁷ | **shift — guarantee void** |
+| Brain | 0.132 | 0.90 | consistent |
+| Skin | 0.030 | 0.42 | consistent |
+
+The check is a precondition, not a footnote: when it fires the app reports the
+guarantee as void and refuses to auto-clear.
+
+The gate stops a failure of *commission* — a confident label on an image the
+model should never have seen. This stops a failure of *omission* — a case
+silently cleared and never read. A triage deployment creates the second one, so
+both guards are needed, and neither touches the diagnostic model.
+
+📄 Full write-up: [`paper/rule_out_triage.md`](paper/rule_out_triage.md)
+
+---
+
 ## Per-task performance
 
 Ordinary transfer-learning baselines — the point of this repo is the study above,
@@ -150,6 +217,11 @@ python src/novel/modality_gate.py train            # build the guard
 python src/novel/modality_gate.py evaluate         # measure the fix
 python src/novel/ood_baselines.py                  # vs MSP / Energy / Mahalanobis / kNN
 python src/novel/make_figures.py
+
+# 5. the triage study
+python src/novel/triage.py                         # all three tasks
+python src/novel/triage.py --task skin --trials 50 # re-draw the calibration split
+python src/novel/triage.py --alpha 0.10            # a looser promise
 ```
 
 ---
@@ -172,12 +244,15 @@ OncoAI/
 │       ├── modality_audit.py   cross-modality silent-failure audit
 │       ├── modality_gate.py    the gate: train + evaluate
 │       ├── ood_baselines.py     MSP / Energy / Mahalanobis / kNN comparison
+│       ├── triage.py           calibration + bounded rule-out threshold
 │       └── make_figures.py     paper figures
 ├── models/                     trained weights + metrics JSON
 ├── results/
 │   ├── brain|lung|skin/        per-task figures and metrics
 │   └── novel/                  audit + gate results and figures
-├── paper/modality_mismatch.md  the write-up
+├── paper/
+│   ├── modality_mismatch.md    write-up: silent failure + the gate
+│   └── rule_out_triage.md      write-up: bounded worklist reduction
 └── demo_images/                sample images, no dataset needed
 ```
 
@@ -202,7 +277,14 @@ All public, all fetched by the script above, none redistributed here.
 - Datasets are modest and come from specific scanners and populations. Accuracy on
   your images will very likely be **lower** than the numbers above — that gap is the
   norm in medical imaging.
-- Outputs are **not calibrated**: a "90%" score is not a 90% chance of cancer.
+- Raw outputs are **not calibrated** — a "90%" score is not a 90% chance of
+  cancer, and temperature scaling only partly fixes it (see the triage study).
+  The rule-out bound is deliberately built not to depend on calibration.
+- The rule-out guarantee holds **only under exchangeability**, which the KS check
+  can refute but never confirm. A shift that preserves the score distribution
+  while changing the risk-label relationship would pass it.
+- Rule-out is evaluated at **image level**. Real screening decides per patient,
+  across views and priors, and would need per-patient calibration units.
 - Nothing here has been validated prospectively or reviewed by any regulator.
 - The gate is tested against *known* foreign modalities. Inputs belonging to no
   medical modality at all are handled only by its confidence floor.

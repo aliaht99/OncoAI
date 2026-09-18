@@ -59,7 +59,9 @@ TASKS = {
         "blurb": "Classifies a dermatoscopic image across seven lesion types.",
         "modality": "Dermatoscopy",
         "source": "HAM10000",
-        "malignant": {"melanoma", "basal cell carcinoma", "actinic keratoses"},
+        # Must match the checkpoint's class names exactly — spaced variants
+        # silently fell through and showed two skin cancers as benign.
+        "malignant": {"melanoma", "basal_cell_carcinoma", "actinic_keratoses"},
     },
 }
 
@@ -149,6 +151,16 @@ def load_gate():
 
 
 @st.cache_data
+@st.cache_data
+def load_triage(key: str) -> dict | None:
+    """Rule-out threshold + temperature from src/novel/triage.py, if computed."""
+    p = RESULTS / "novel" / f"triage_{key}.json"
+    if not p.exists():
+        return None
+    with open(p) as f:
+        return json.load(f)
+
+
 def load_summary(key: str) -> dict:
     p = RESULTS / key / "summary.json"
     if p.exists():
@@ -248,6 +260,14 @@ with st.sidebar:
                          disabled=not gate_on)
     st.caption("Turn this off to reproduce the silent-failure behaviour "
                "measured in the paper.")
+
+    st.markdown("---")
+    st.markdown("### 📋 Rule-out triage")
+    triage_on = st.checkbox("Show worklist decision", value=True,
+                            help="Apply the calibrated rule-out threshold whose "
+                                 "miss rate is bounded on held-out data.")
+    st.caption("Built by `src/novel/triage.py`. Only offered for tasks whose "
+               "calibration set is large enough to support a bound.")
 
 # ── header ──────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -373,6 +393,49 @@ with tab_predict:
                     df.style.format({"Probability": "{:.1%}"})
                       .bar(subset=["Probability"], color="#67e8f9"),
                     hide_index=True, width="stretch")
+
+                tri = load_triage(key) if triage_on else None
+                if tri:
+                    g, c, v = tri["guarantee"], tri["calibration"], tri["validity"]
+                    temp = tri["temperature"]
+                    # Re-derive the malignancy risk on the same scale the
+                    # threshold was chosen on: temperature-scaled, summed over
+                    # the classes that need a human.
+                    logits = torch.log(torch.tensor(probs).clamp_min(1e-12))
+                    cal_probs = torch.softmax(logits / temp, 0).numpy()
+                    mal_idx = [i for i, cn in enumerate(class_names)
+                               if cn in tri["malignant_classes"]]
+                    risk = float(cal_probs[mal_idx].sum())
+
+                    st.markdown("**Worklist decision**")
+                    if not g["feasible"]:
+                        st.info(
+                            f"🚫 **No rule-out offered.** This task has only "
+                            f"{c['n_threshold_positives']} malignant calibration cases; "
+                            f"{c['positives_needed_for_alpha']} are needed to promise a "
+                            f"{tri['alpha']:.0%} miss rate at "
+                            f"{1 - tri['delta']:.0%} confidence. Every case goes to a human.")
+                    elif v["shift_detected"]:
+                        st.warning(
+                            "⚠️ **Rule-out suspended.** The evaluation data was not "
+                            "exchangeable with the calibration data, so the bound does "
+                            "not hold. Recalibrate before using this threshold.")
+                    elif risk < g["threshold"]:
+                        st.success(
+                            f"✅ **Auto-cleared** — malignancy risk {risk:.2%} is below "
+                            f"the rule-out threshold {g['threshold']:.2%}. "
+                            f"On held-out data this filter removes "
+                            f"{tri['test']['workload_reduction']:.0%} of the worklist while "
+                            f"missing at most {g['guaranteed_miss_rate']:.1%} of cancers "
+                            f"({1 - tri['delta']:.0%} confidence).")
+                    else:
+                        st.error(
+                            f"👤 **Refer to a clinician** — malignancy risk {risk:.2%} is "
+                            f"above the rule-out threshold {g['threshold']:.2%}. "
+                            f"This case is not safe to clear automatically.")
+                    st.caption(
+                        f"Calibrated risk {risk:.1%} (temperature {temp:.2f}); "
+                        f"raw softmax ECE {c['ece_raw']:.3f} → {c['ece_calibrated']:.3f}.")
 
                 margin = float(np.sort(probs)[-1] - np.sort(probs)[-2])
                 if margin < 0.15:

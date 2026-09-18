@@ -186,9 +186,12 @@ def build_lung(image_size: int = 224, seed: int = 42):
 # ─────────────────────────────────────────────────────────────────────────────
 # SKIN — HAM10000 as HF parquet shards (image bytes + dx label).
 # ─────────────────────────────────────────────────────────────────────────────
-def build_skin(image_size: int = 224, seed: int = 42, max_per_class: int | None = None,
-               group_by_lesion: bool = True):
-    """HAM10000.
+def skin_frames(seed: int = 42, group_by_lesion: bool = True):
+    """The HAM10000 split as dataframes, metadata columns intact.
+
+    Split separately from ``build_skin`` so downstream studies can slice the test
+    set by age, body site or diagnosis route without re-deriving — and risking
+    disagreeing with — the lesion-level split.
 
     IMPORTANT: the splits shipped with this mirror are image-level, and HAM10000
     contains several images of the same physical lesion. 72% of the lesions in
@@ -247,6 +250,15 @@ def build_skin(image_size: int = 224, seed: int = 42, max_per_class: int | None 
             df_test = pool[part == "test"].reset_index(drop=True)
 
     class_names = sorted(df_train[label_col].astype(str).unique())
+    return df_train, df_val, df_test, class_names
+
+
+def build_skin(image_size: int = 224, seed: int = 42, max_per_class: int | None = None,
+               group_by_lesion: bool = True):
+    """HAM10000 datasets — see :func:`skin_frames` for how the split is made."""
+    label_col = "dx"
+    image_col = "image"
+    df_train, df_val, df_test, class_names = skin_frames(seed, group_by_lesion)
 
     index_of = {c: i for i, c in enumerate(class_names)}
 

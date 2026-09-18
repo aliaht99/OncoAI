@@ -1,0 +1,142 @@
+{
+  "task": "lung",
+  "classes": [
+    "adenocarcinoma",
+    "large.cell.carcinoma",
+    "normal",
+    "squamous.cell.carcinoma"
+  ],
+  "malignant_classes": [
+    "adenocarcinoma",
+    "large.cell.carcinoma",
+    "squamous.cell.carcinoma"
+  ],
+  "alpha": 0.05,
+  "delta": 0.05,
+  "temperature": 1.0605669021606445,
+  "calibration": {
+    "n_temp_fit": 21,
+    "n_threshold": 51,
+    "n_threshold_positives": 41,
+    "positives_needed_for_alpha": 59,
+    "sufficient": false,
+    "ece_raw": 0.03868000609642368,
+    "ece_calibrated": 0.04338588188007726,
+    "brier_raw": 0.006555984596270853,
+    "brier_calibrated": 0.007079427658369514
+  },
+  "validity": {
+    "ks_statistic": 0.34077766699900297,
+    "p_value": 5.2598983426174527e-05,
+    "shift_detected": true,
+    "p_threshold": 0.05
+  },
+  "guarantee": {
+    "threshold": 0.0,
+    "calibration_misses": 0,
+    "calibration_positives": 41,
+    "guaranteed_miss_rate": 0.07046111727016405,
+    "feasible": false
+  },
+  "test": {
+    "threshold": 0.0,
+    "workload_reduction": 0.0,
+    "n_cleared": 0,
+    "n_total": 295,
+    "missed_malignant": 0,
+    "n_malignant": 241,
+    "miss_rate": 0.0,
+    "sensitivity": 1.0,
+    "referred_prevalence": 0.8169491525423729,
+    "base_prevalence": 0.8169491525423729
+  },
+  "stability": {
+    "trials": 50,
+    "violations": 0,
+    "violation_rate": 0.0,
+    "miss_rate_mean": 0.0,
+    "miss_rate_max": 0.0,
+    "workload_mean": 0.0,
+    "workload_min": 0.0,
+    "workload_max": 0.0
+  },
+  "sweep": [
+    {
+      "alpha": 0.01,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.07046111727016405,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.02,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.07046111727016405,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.05,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.07046111727016405,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.1,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.07046111727016405,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.15,
+      "threshold": 0.9556018114089966,
+      "cal_misses": 2,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.14570550339142993,
+      "workload_reduction": 0.4440677966101695,
+      "test_miss_rate": 0.31950207468879666,
+      "test_sensitivity": 0.6804979253112033,
+      "feasible": true
+    },
+    {
+      "alpha": 0.2,
+      "threshold": 0.9583973288536072,
+      "cal_misses": 3,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.17839535553925906,
+      "workload_reduction": 0.45084745762711864,
+      "test_miss_rate": 0.3278008298755187,
+      "test_sensitivity": 0.6721991701244814,
+      "feasible": true
+    },
+    {
+      "alpha": 0.3,
+      "threshold": 0.9770544171333313,
+      "cal_misses": 7,
+      "cal_positives": 41,
+      "guaranteed_miss_rate": 0.2968880055386386,
+      "workload_reduction": 0.6440677966101694,
+      "test_miss_rate": 0.5643153526970954,
+      "test_sensitivity": 0.43568464730290457,
+      "feasible": true
+    }
+  ]
+}

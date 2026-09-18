@@ -1,0 +1,138 @@
+{
+  "task": "brain",
+  "classes": [
+    "no_tumor",
+    "tumor"
+  ],
+  "malignant_classes": [
+    "tumor"
+  ],
+  "alpha": 0.05,
+  "delta": 0.05,
+  "temperature": 0.7259494066238403,
+  "calibration": {
+    "n_temp_fit": 11,
+    "n_threshold": 27,
+    "n_threshold_positives": 15,
+    "positives_needed_for_alpha": 59,
+    "sufficient": false,
+    "ece_raw": 0.130761875918037,
+    "ece_calibrated": 0.13724069258100108,
+    "brier_raw": 0.06824326451224944,
+    "brier_calibrated": 0.05893226839507565
+  },
+  "validity": {
+    "ks_statistic": 0.1364522417153996,
+    "p_value": 0.8765700036395819,
+    "shift_detected": false,
+    "p_threshold": 0.05
+  },
+  "guarantee": {
+    "threshold": 0.0,
+    "calibration_misses": 0,
+    "calibration_positives": 15,
+    "guaranteed_miss_rate": 0.18103627252208462,
+    "feasible": false
+  },
+  "test": {
+    "threshold": 0.0,
+    "workload_reduction": 0.0,
+    "n_cleared": 0,
+    "n_total": 38,
+    "missed_malignant": 0,
+    "n_malignant": 23,
+    "miss_rate": 0.0,
+    "sensitivity": 1.0,
+    "referred_prevalence": 0.6052631578947368,
+    "base_prevalence": 0.6052631578947368
+  },
+  "stability": {
+    "trials": 50,
+    "violations": 0,
+    "violation_rate": 0.0,
+    "miss_rate_mean": 0.0,
+    "miss_rate_max": 0.0,
+    "workload_mean": 0.0,
+    "workload_min": 0.0,
+    "workload_max": 0.0
+  },
+  "sweep": [
+    {
+      "alpha": 0.01,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.02,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.05,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.1,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.15,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.2,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.18103627252208462,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.3,
+      "threshold": 0.2554168701171875,
+      "cal_misses": 1,
+      "cal_positives": 15,
+      "guaranteed_miss_rate": 0.2793961936128765,
+      "workload_reduction": 0.3157894736842105,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": true
+    }
+  ]
+}

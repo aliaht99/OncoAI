@@ -1,0 +1,145 @@
+{
+  "task": "skin",
+  "classes": [
+    "actinic_keratoses",
+    "basal_cell_carcinoma",
+    "benign_keratosis-like_lesions",
+    "dermatofibroma",
+    "melanocytic_Nevi",
+    "melanoma",
+    "vascular_lesions"
+  ],
+  "malignant_classes": [
+    "actinic_keratoses",
+    "basal_cell_carcinoma",
+    "melanoma"
+  ],
+  "alpha": 0.05,
+  "delta": 0.05,
+  "temperature": 1.0755188465118408,
+  "calibration": {
+    "n_temp_fit": 511,
+    "n_threshold": 1195,
+    "n_threshold_positives": 262,
+    "positives_needed_for_alpha": 59,
+    "sufficient": true,
+    "ece_raw": 0.049700874398918,
+    "ece_calibrated": 0.04366494768714119,
+    "brier_raw": 0.10405362719581246,
+    "brier_calibrated": 0.10271170993344397
+  },
+  "validity": {
+    "ks_statistic": 0.0306160897008085,
+    "p_value": 0.5136799931747967,
+    "shift_detected": false,
+    "p_threshold": 0.05
+  },
+  "guarantee": {
+    "threshold": 0.03380190208554268,
+    "calibration_misses": 7,
+    "calibration_positives": 262,
+    "guaranteed_miss_rate": 0.04959591036570026,
+    "feasible": true
+  },
+  "test": {
+    "threshold": 0.03380190208554268,
+    "workload_reduction": 0.3825779870512066,
+    "n_cleared": 650,
+    "n_total": 1699,
+    "missed_malignant": 10,
+    "n_malignant": 389,
+    "miss_rate": 0.02570694087403599,
+    "sensitivity": 0.974293059125964,
+    "referred_prevalence": 0.36129647283126787,
+    "base_prevalence": 0.22895821071218364
+  },
+  "stability": {
+    "trials": 50,
+    "violations": 0,
+    "violation_rate": 0.0,
+    "miss_rate_mean": 0.022159383033419022,
+    "miss_rate_max": 0.030848329048843187,
+    "workload_mean": 0.34805179517363155,
+    "workload_min": 0.2607416127133608,
+    "workload_max": 0.4432018834608593
+  },
+  "sweep": [
+    {
+      "alpha": 0.01,
+      "threshold": 0.0,
+      "cal_misses": 0,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.011368971845228792,
+      "workload_reduction": 0.0,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": false
+    },
+    {
+      "alpha": 0.02,
+      "threshold": 0.004329836927354336,
+      "cal_misses": 1,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.01797750042571497,
+      "workload_reduction": 0.020600353148911125,
+      "test_miss_rate": 0.0,
+      "test_sensitivity": 1.0,
+      "feasible": true
+    },
+    {
+      "alpha": 0.05,
+      "threshold": 0.03380190208554268,
+      "cal_misses": 7,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.04959591036570026,
+      "workload_reduction": 0.3825779870512066,
+      "test_miss_rate": 0.02570694087403599,
+      "test_sensitivity": 0.974293059125964,
+      "feasible": true
+    },
+    {
+      "alpha": 0.1,
+      "threshold": 0.11344319581985474,
+      "cal_misses": 17,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.09573973677552901,
+      "workload_reduction": 0.5662154208357858,
+      "test_miss_rate": 0.07969151670951156,
+      "test_sensitivity": 0.9203084832904884,
+      "feasible": true
+    },
+    {
+      "alpha": 0.15,
+      "threshold": 0.18663674592971802,
+      "cal_misses": 29,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.1478428707359744,
+      "workload_reduction": 0.6280164802825191,
+      "test_miss_rate": 0.12596401028277635,
+      "test_sensitivity": 0.8740359897172236,
+      "feasible": true
+    },
+    {
+      "alpha": 0.2,
+      "threshold": 0.25457456707954407,
+      "cal_misses": 41,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.19820548800398063,
+      "workload_reduction": 0.6615656268393173,
+      "test_miss_rate": 0.15424164524421594,
+      "test_sensitivity": 0.8457583547557841,
+      "feasible": true
+    },
+    {
+      "alpha": 0.3,
+      "threshold": 0.4246630072593689,
+      "cal_misses": 66,
+      "cal_positives": 262,
+      "guaranteed_miss_rate": 0.29991152320023406,
+      "workload_reduction": 0.7180694526191878,
+      "test_miss_rate": 0.2133676092544987,
+      "test_sensitivity": 0.7866323907455013,
+      "feasible": true
+    }
+  ]
+}
